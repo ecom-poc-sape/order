@@ -2,53 +2,84 @@ package com.order.domain;
 
 import java.util.List;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import com.sapient.ecomm_commons.domain.Product;
 
 @Document
 public class Order {
 
-	private String orderId;
+	@Id
+	private String id;
 	private List<String> products;
-	private String userId;
-	
+	private String customerId;
+	private OrderStatus status;
+
 	public Order(List<String> products, String userId) {
 		this.products = products;
-		this.userId = userId;
+		this.customerId = userId;
 	}
+	
+	
+
+	public Order(String customerId, List<String> products, OrderStatus status) {
+		super();
+		this.products = products;
+		this.customerId = customerId;
+		this.status = status;
+	}
+
+
+
 	public Order() {
 	}
-	public String getOrderId() {
-		return orderId;
+
+	public String getId() {
+		return id;
 	}
-	public void setOrderId(String orderId) {
-		this.orderId = orderId;
+
+	public void setId(String orderId) {
+		this.id = orderId;
 	}
+
 	public List<String> getProducts() {
 		return products;
 	}
+
 	public void setProducts(List<String> products) {
 		this.products = products;
 	}
-	public String getUserId() {
-		return userId;
+
+	public String getCustomerId() {
+		return customerId;
 	}
-	public void setUserId(String userId) {
-		this.userId = userId;
+
+	public void setCustomerId(String userId) {
+		this.customerId = userId;
 	}
+
+	public OrderStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(OrderStatus status) {
+		this.status = status;
+	}
+
 	@Override
 	public String toString() {
-		return "OrderObject [orderId=" + orderId + ", products=" + products + ", userId=" + userId + "]";
+		return "Order [orderId=" + id + ", products=" + products + ", customerId=" + customerId + ", status="
+				+ status + "]";
 	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((orderId == null) ? 0 : orderId.hashCode());
-		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((customerId == null) ? 0 : customerId.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -58,17 +89,17 @@ public class Order {
 		if (getClass() != obj.getClass())
 			return false;
 		Order other = (Order) obj;
-		if (orderId == null) {
-			if (other.orderId != null)
+		if (id == null) {
+			if (other.id != null)
 				return false;
-		} else if (!orderId.equals(other.orderId))
+		} else if (!id.equals(other.id))
 			return false;
-		if (userId == null) {
-			if (other.userId != null)
+		if (customerId == null) {
+			if (other.customerId != null)
 				return false;
-		} else if (!userId.equals(other.userId))
+		} else if (!customerId.equals(other.customerId))
 			return false;
 		return true;
 	}
-	
+
 }

@@ -14,9 +14,13 @@ public class OrderAppApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(OrderAppApplication.class, args);
 	}
+	
 	@Bean
 	@LoadBalanced
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
+	
+	
+	
 }
