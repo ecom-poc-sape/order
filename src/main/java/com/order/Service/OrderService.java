@@ -1,6 +1,8 @@
 package com.order.Service;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +18,7 @@ import com.order.domain.Order;
 import com.order.domain.OrderStatus;
 import com.order.events.PaymentEvent;
 import com.order.repository.OrderRepository;
+import com.sapient.ecomm_commons.domain.Product;
 
 @Service
 public class OrderService {
@@ -34,8 +37,7 @@ public class OrderService {
 
 	@Autowired
 	private OrderProcessor orderProcessor;
-	
-	
+
 	@Autowired
 	private PaymentEvent paymentEvent;
 
@@ -47,18 +49,30 @@ public class OrderService {
 	 */
 	public String initiateOrder(String customerId) {
 		String orderStatus;
-		
+
 		Order latestOrder = orderProcessor.getLatestOrder(customerId);
-		
-		System.out.println(latestOrder);
+		String orderId = null;
 		List<String> products = latestOrder.getProducts();
 		latestOrder.setStatus(OrderStatus.IN_PROGRESS);
+		
+		List<LinkedHashMap> list =  restTemplate.getForObject(inventoryURI + "products", List.class);
+		System.out.println(list);
+		
+		 double totalPrice = 0;
+		 
+		 for(LinkedHashMap map : list) {
+			 if(products.contains((String)map.get("id"))) {
+				 totalPrice += (Double)map.get("price");
+			 }
+		 }
+		 
+		 latestOrder.setTotalPrice(totalPrice);
 		// To update the product count before initiating the order
 		StringBuilder inventoryreduceURI = new StringBuilder(inventoryURI);
 		// To update the product count if payment fails
 		StringBuilder inventoryIncreaseURI = new StringBuilder(inventoryURI);
 		// Get the list of products from cart.
-		
+
 		if (products != null && products.size() > 0) {
 			inventoryreduceURI.append("products/ids/");
 			for (String str : products) {
@@ -71,6 +85,7 @@ public class OrderService {
 					String.class);
 			// Persist the order in DB.
 			Order savedOrder = orderRepository.save(latestOrder);
+			orderId = savedOrder.getId();
 			orderStatus = "orderinitiated";
 			// Kafka event generation below
 			initiatePaymentEvent(savedOrder);
@@ -78,7 +93,7 @@ public class OrderService {
 			orderStatus = "emptycart";
 		}
 
-		return orderStatus;
+		return orderId;
 	}
 
 	public void initiatePaymentEvent(Order order) {

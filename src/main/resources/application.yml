@@ -15,5 +15,6 @@ spring.cloud.stream.bindings.input:
   destination: cart_topic
 
 spring.cloud.stream.bindings.payment.destination: payment_topic
+spring.cloud.stream.bindings.payment_status.destination: payment_status_topic
             
             

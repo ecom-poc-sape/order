@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.sapient.ecomm_commons.domain.PaymentDetails;
+
 @Document
 public class Order {
 
@@ -13,13 +15,13 @@ public class Order {
 	private List<String> products;
 	private String customerId;
 	private OrderStatus status;
+	private Double totalPrice;
+	private PaymentDetails details;
 
 	public Order(List<String> products, String userId) {
 		this.products = products;
 		this.customerId = userId;
 	}
-	
-	
 
 	public Order(String customerId, List<String> products, OrderStatus status) {
 		super();
@@ -27,8 +29,6 @@ public class Order {
 		this.customerId = customerId;
 		this.status = status;
 	}
-
-
 
 	public Order() {
 	}
@@ -65,10 +65,26 @@ public class Order {
 		this.status = status;
 	}
 
+	public Double getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(Double totalPrice) {
+		this.totalPrice = totalPrice;
+	}
+
+	public PaymentDetails getDetails() {
+		return details;
+	}
+
+	public void setDetails(PaymentDetails details) {
+		this.details = details;
+	}
+
 	@Override
 	public String toString() {
-		return "Order [orderId=" + id + ", products=" + products + ", customerId=" + customerId + ", status="
-				+ status + "]";
+		return "Order [id=" + id + ", products=" + products + ", customerId=" + customerId + ", status=" + status
+				+ ", totalPrice=" + totalPrice + ", details=" + details + "]";
 	}
 
 	@Override

@@ -16,18 +16,17 @@ public class OrderRestController {
 
 	@Autowired
 	OrderService orderService;
-	
+
 	@PostMapping("/{customerId}")
-	public ResponseEntity<String> initiateOrder(@PathVariable String customerId){
+	public ResponseEntity<String> initiateOrder(@PathVariable String customerId) {
 		String message = orderService.initiateOrder(customerId);
-		
-		System.out.println("message when placing the order:"+message);
-		
-		return (message != null && message.equals("orderinitiated"))?
-				ResponseEntity.ok().body("Your order has been initiated. Redirecting to Payment gateway") 
+
+		System.out.println("message when placing the order:" + message);
+
+		return (message != null)
+				? ResponseEntity.ok()
+						.body("Your order has been initiated with id: " + message + " Redirecting to Payment gateway.")
 				: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
-	
-	
-	 
+
 }
